@@ -11,6 +11,7 @@
 #include <iostream>
     class parse_from_api {
         const std::string owner_id_;
+        std::string access_token_;
         binary_file_writer fileWriter;
     public:
         explicit parse_from_api(const std::string &owner_id_);

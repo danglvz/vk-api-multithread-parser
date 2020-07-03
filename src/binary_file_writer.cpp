@@ -5,7 +5,7 @@
 #include "binary_file_writer.h"
 
 
-binary_file_writer::binary_file_writer(const std::string &filename) : out(filename, std::ios::app) {}
+binary_file_writer::binary_file_writer(const std::string &filename) : out(filename, std::ios::out | std::ios::trunc) {}
 
 void binary_file_writer::write(const std::vector<std::uint32_t> &vec, const std::array<int, 2> &post) {
     const std::uint32_t id(post[0]), size(vec.size()), nul{};

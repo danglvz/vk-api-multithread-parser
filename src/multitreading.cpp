@@ -3,15 +3,12 @@
 //
 
 #include "multitreading.h"
-
 #include <utility>
 #include "custom_http_client.h"
 
 
 
-
-
-thread_creator::thread_creator(const std::string &owner_id, int num) : parse(owner_id), done(false), joiner(threads) {
+thread_creator::thread_creator(const std::string &owner_id, int num) : parse(owner_id), done(false) {
     try {
         for (int i = 0; i < num; ++i) {
             threads.emplace_back(&thread_creator::work, this);
@@ -20,7 +17,6 @@ thread_creator::thread_creator(const std::string &owner_id, int num) : parse(own
         done = true;
         throw;
     }
-
 }
 
 void thread_creator::submit(std::array<int, 2> &func) {
@@ -28,25 +24,40 @@ void thread_creator::submit(std::array<int, 2> &func) {
 }
 
 void thread_creator::work() {
-    http_client httpClient{};
-    std::array<int, 2> post{};
-    while (!done) {
-        if (queue.pop(post)) {
-            parse.parse_likes(post, httpClient);
-        } else {
-            std::this_thread::yield();
+    http_client httpClient {};
+    for (;;) {
+        std::array<int, 2> post {};
+        {
+            std::unique_lock<std::mutex> ul(mut);
+            cond.wait(ul, [this](){ return !queue.empty() || done ;});
+            if ( queue.empty() && done ) return;
+            post = std::move(queue.front());
+            queue.pop();
         }
+        parse.parse_likes(post, httpClient);
     }
 }
 
 thread_creator::~thread_creator() {
     done = true;
+    cond.notify_all();
+    for ( auto &thread : threads ) {
+        thread.join();
+    }
+    std::cout << "DONE!\n";
 }
 
-void thread_creator::start() {
+void thread_creator::start(int count) {
     http_client httpClient{};
-    for ( int  offset = 0; offset < 1000; offset += 100 ) {
-        for ( auto post : parse.parse_posts(offset, httpClient)) queue.push(post);
+    std::cout << "parsing....\n";
+    for ( int  offset = 0; offset <= count; offset += 100 ) {
+        for ( auto &post : parse.parse_posts(offset, httpClient)) {
+            if ( post[1] != 0 ) {
+                std::unique_lock<std::mutex> ul(mut);
+                queue.push(post);
+            }
+            cond.notify_one();
+        }
     }
-    while ( !queue.isEmpty() ) std::this_thread::sleep_for(std::chrono::seconds(5));
+
 }
