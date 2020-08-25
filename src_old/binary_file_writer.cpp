@@ -1,6 +1,3 @@
-//
-// Created by dd on 26.06.2020.
-//
 
 #include "binary_file_writer.h"
 

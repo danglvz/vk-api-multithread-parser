@@ -26,7 +26,6 @@ parse_from_api::parse_from_api(const std::string &owner_id) : owner_id_(owner_id
     if (access_token_.empty())
         throw std::runtime_error("Reading config error: access_token value not found");
     config.close();
-
 }
 
 std::vector<std::array<int, 2>> parse_from_api::parse_posts(const int &offset, http_client &myHttp) {
