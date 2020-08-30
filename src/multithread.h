@@ -64,13 +64,12 @@ namespace vk_parse {
 
 
     class requests_pool{
-        thread_safe_queue<posts_item> posts_queue;
+        thread_safe_queue<std::function<void(simple_https::https_client&)>> task_queue;
         std::vector<std::thread> threads;
         std::atomic_bool done;
-        requests_maker requestsMaker;
     public:
         explicit requests_pool(int threads_num, const std::string &group_id);
-        void submit(posts_item &post);
+        std::future<std::string> submit(std::function<std::string(simple_https::https_client&)> func);
         ~requests_pool();
     };
 
