@@ -4,7 +4,6 @@
 
 #include "multithread.h"
 #include "thread_safe_binary_file_writer.h"
-#include "work_with_sqlite/sqlite3_writer.h"
 
 namespace vk_parse{
 

@@ -9,7 +9,7 @@ target_sources(vk_parser_main PRIVATE main.cpp)
 target_include_directories(vk_parser_main PRIVATE 
     ${CMAKE_CURRENT_LIST_DIR}/likes_parser 
     ${CMAKE_CURRENT_LIST_DIR}/likes_parser/https_client/src
-    ${CMAKE_CURRENT_LIST_DIR}/likes_parser/work_with_sqlite)
+    )
 
 target_link_libraries(vk_parser_main PRIVATE
                         vk_likes_parser
