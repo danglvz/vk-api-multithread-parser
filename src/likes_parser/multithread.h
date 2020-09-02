@@ -49,44 +49,45 @@ namespace vk_parse {
             }
         }
     };
-/*
-    class requests_pool{
-        thread_safe_queue<std::string(simple_https::https_client)> req_queue;
-        std::vector<std::thread> threads;
-        std::string hostname_, output_file_name_;
-        std::atomic_bool done;
-    public:
-        explicit requests_pool(std::size_t num_of_threads, const std::string &hostname);
-        void submit(const std::string &request);
-        ~requests_pool();
-    };
-*/
+
 
 
     class requests_pool{
         thread_safe_queue<std::function<void(simple_https::https_client&)>> task_queue;
         std::vector<std::thread> threads;
         std::atomic_bool done;
+        std::exception_ptr exc_ptr;
     public:
-        explicit requests_pool(int threads_num, const std::string &group_id);
+        explicit requests_pool(int threads_num);
         std::future<std::string> submit(std::function<std::string(simple_https::https_client&)> func);
         ~requests_pool();
     };
+
+
+
+
+
+    
 
     class thread_pool{
         thread_safe_queue<std::function<void()>> work_queue;
         std::vector<std::thread> threads;
         bool done;
+        std::exception_ptr exc_ptr;
     public:
         explicit thread_pool(int workers) : done(false) {
             for ( int i{}; i < workers; ++i ) {
                 threads.emplace_back([this](){
                     while(!this->done) {
-                        std::function<void()> task;
-                        if (this->work_queue.try_pop(task) ) {
-                            task();
-                        } else {
-                            std::this_thread::yield();
+                        try{
+                            std::function<void()> task;
+                            if (this->work_queue.try_pop(task) ) {
+                                task();
+                            } else {
+                                std::this_thread::yield();
+                            }
+                        } catch(...){
+                            this->exc_ptr =std::current_exception();  
                         }
                     }
                 });
@@ -95,6 +96,10 @@ namespace vk_parse {
 
         ~thread_pool() {
             done = true;
+            if (exc_ptr){
+                std::rethrow_exception(exc_ptr);
+            }
+
             for ( auto &thread: threads ) thread.join();
         }
 

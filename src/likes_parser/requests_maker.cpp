@@ -17,7 +17,7 @@ posts requests_maker::parse_posts(int offset, simple_https::https_client &httpsC
 }
 
 void requests_maker::parse_who_liked(posts_item &post, simple_https::https_client &httpsClient) {
-    std::vector<uint32_t> output, temp;
+    std::vector<std::uint32_t> output;
     output.reserve(post[1] + 30);
     int count{post[1]};
     if ( post[1] == 0 ) {
@@ -26,11 +26,11 @@ void requests_maker::parse_who_liked(posts_item &post, simple_https::https_clien
     }
 
     for ( int offset = 0; count > 0; offset += 1000, count -= 1000 ) {
-        temp = get_likes_array(httpsClient.get_request("method/likes.getList?type=post&count=1000&access_token=" + access_token_ + "&v=5.110&owner_id=" +
-                                            owner_id_ + "&offset=" + std::to_string(offset) + "&item_id=" + std::to_string(post[0])));
+        std::vector<std::uint32_t> temp{get_likes_array(httpsClient.get_request("method/likes.getList?type=post&count=1000&access_token=" + access_token_ + "&v=5.110&owner_id=" +
+                                            owner_id_ + "&offset=" + std::to_string(offset) + "&item_id=" + std::to_string(post[0])))};
         output.insert(output.end(), temp.begin(), temp.end());
     }
-    binaryFileWriter.write(output, post);
+    //binaryFileWriter.write(output, post);
 }
 
 
