@@ -1,6 +1,4 @@
-//
-// Created by dd on 21.08.2020.
-//
+
 
 #ifndef VK_PARSER_PARSERS_FROM_JSON_H
 #define VK_PARSER_PARSERS_FROM_JSON_H
