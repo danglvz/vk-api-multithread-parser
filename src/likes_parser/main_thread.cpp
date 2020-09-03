@@ -7,9 +7,9 @@
 
 using namespace vk_parse;
 
-vk_parse::main_thread::main_thread(const std::string &owner_id, const std::string &output_filename, int count_of_threads): 
+vk_parse::main_thread::main_thread(const std::string &owner_id, const std::string &output_filename, int count_of_threads, const std::string &access_token): 
 owner_id_(std::move(owner_id)),
-access_token_("2dfa071b2dfa071b2dfa071bde2d8ac66a22dfa2dfa071b737d6b938b670684ffa5a85e"),
+access_token_(access_token),
 //sql_writer(output_filename, owner_id ),
 file(output_filename),
 req_pool(count_of_threads)

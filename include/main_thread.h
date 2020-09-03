@@ -14,7 +14,7 @@ namespace vk_parse{
 
         requests_pool req_pool;
     public:
-        main_thread(const std::string &owner_id, const std::string &output_filename, int count_of_threads);
+        main_thread(const std::string &owner_id, const std::string &output_filename, int count_of_threads, const std::string &access_token);
         void start(std::size_t count_of_posts);        
     };
 }
