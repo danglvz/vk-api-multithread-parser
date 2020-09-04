@@ -9,7 +9,7 @@
 
 
 
-void vk_parser::count_items(const std::string &filename){
+void vk_parser::count_items(const std::string &filename, const std::string &group_id){
     binary_file_reader binred(filename);
     std::unordered_map<std::uint32_t, std::uint32_t> map{};
     
@@ -46,7 +46,7 @@ void vk_parser::count_items(const std::string &filename){
         std::cout<< output[i].first << "  " << output[i].second << "\n";
     }                                            
 
-    vk_parse::sqlite::sqlite3_writer sql3{"output.db", "777"};
+    vk_parse::sqlite::sqlite3_writer sql3{"output.db", group_id};
     sql3.create_new_group_table();
     sql3.start_transaction();
     for ( auto &i:output ){
