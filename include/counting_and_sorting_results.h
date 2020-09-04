@@ -3,7 +3,7 @@
 #include <string>
 
 namespace vk_parser{
-    void count_items(const std::string &filename, const std::string &group_id);
+    void count_items(const std::string &filename, const std::string &group_id, const std::string &output_db_name);
 }
 
 

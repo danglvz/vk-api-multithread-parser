@@ -46,6 +46,9 @@ posts vk_parse::get_posts_ids(const std::string &str) {
                     if ( !str.compare(i - id_key.length(), id_key.length(), id_key) ) {
                         start = str.find_first_of(digits, i);
                         i = str.find_first_not_of(digits, start);
+                        if (i == std::string::npos){
+                            return std::vector<posts_item>();
+                        }
                         temp_item[0] = std::stoi(str.substr(start, i - start));
                     }
                     else if ( !str.compare(i - likes_key.length(), likes_key.length(), likes_key) ) isIn = true;
@@ -53,6 +56,9 @@ posts vk_parse::get_posts_ids(const std::string &str) {
                 } else if ( isIn && !str.compare(i - count_key.length(), count_key.length(), count_key) ) {
                     start = str.find_first_of(digits, i);
                     i = str.find_first_not_of(digits, start);
+                    if (i == std::string::npos){
+                        return std::vector<posts_item>();
+                    }
                     temp_item[1] = std::stoi(str.substr(start, i - start));
                     output.push_back(temp_item);
                 }
@@ -79,7 +85,7 @@ std::vector<std::uint32_t> vk_parse::get_likes_array(const std::string &str) {
     for ( std::size_t i = start; quad_scopes > 0 && i < str.length(); ++i ) {
         if ( str[i] >= '0' && str[i] <= '9' ) {
             start = i;
-            for ( ;str[i] >= '0' && str[i] <= '9'; ++i );
+            for ( ;str[i] >= '0' && str[i] <= '9' && i < str.length(); ++i );
             output.emplace_back(std::stoi(str.substr(start, i - start)));
         } else if ( str[i] == ']' ) --quad_scopes;
     }

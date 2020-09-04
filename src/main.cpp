@@ -16,7 +16,7 @@ int main(int argc, char* argv[]){
 
 
     std::string access_token, group_id, help{"--access_token; -a;[set your access token]\n--group_id; -g;[set group id without \"-\"]\n--file; -f[file with groupes ids]\n"};
-    std::string file_with_ids;
+    std::string file_with_ids, output_db_file{"output.db"};
     size_t count_of_posts{};
     if (argc < 4) {
         std::cout << help;
@@ -52,6 +52,13 @@ int main(int argc, char* argv[]){
             }
             file_with_ids.assign(argv[i+1]);
         }
+        else if (strcmp(argv[i], "--output_db") == 0 || strcmp(argv[i], "-o")==0) {
+            if ( (i+1) >= argc ){
+                std::cout << help;
+                return 0;
+            }
+            output_db_file.assign(argv[i+1]);
+        }
     }
 
     std::vector<std::string> ids;
@@ -86,17 +93,16 @@ int main(int argc, char* argv[]){
 
             vk_parse::main_thread p(id, filename, 30, access_token);
             p.start(count_of_posts);
-            vk_parser::count_items(filename, id);
+            vk_parser::count_items(filename, id, output_db_file);
         }
     } else {
+        filename.assign("cache_"+group_id);
         vk_parse::main_thread p(group_id, filename, 30, access_token);
         p.start(count_of_posts);
 
-        vk_parser::count_items(filename, group_id);
+        vk_parser::count_items(filename, group_id, output_db_file);
     }
     
-
-
 
     return 0;
 }
