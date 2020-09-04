@@ -17,7 +17,7 @@ int main(int argc, char* argv[]){
 
     std::string access_token, group_id, help{"--access_token; -a;[set your access token]\n--group_id; -g;[set group id without \"-\"]\n--file; -f[file with groupes ids]\n"};
     std::string file_with_ids;
-    size_t count_of_posts;
+    size_t count_of_posts{};
     if (argc < 4) {
         std::cout << help;
         return 0;
@@ -61,7 +61,20 @@ int main(int argc, char* argv[]){
         while(getline(file, s)){
             ids.emplace_back(s);
         }
+        file.close();
     }
+
+    if (count_of_posts  == 0){
+        std::cout << "set count of posts\n";
+        std::cout << "\n" << help;
+        return 0;
+    } 
+    if ( access_token.length() == 0 ){
+        std::cout << "set your access_token\n";
+        std::cout << "\n" << help;
+        return 0;
+    }
+
 
 
     std::cout << "Your access_token: "<< access_token << "\nYour group" << group_id << "\nCount_of_posts: " << count_of_posts << '\n';
