@@ -1,4 +1,4 @@
 [submodule "src/https_client"]
 	path = src/likes_parser/https_client
-	url = https://github.com/glvz/https_client
+	url = https://github.com/dangolovz/https_client
 
