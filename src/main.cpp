@@ -10,14 +10,12 @@
 
 
 int main(int argc, char* argv[]){
-    //std::cout << "count_of_threads: "  << std::stoi(argv[1]) << std::endl;
-    //std::cout << "count_of posts: " << std::stoi(argv[2]) << std::endl;
 
 
 
-    std::string access_token, group_id, help{"--access_token; -a;[set your access token]\n--group_id; -g;[set group id without \"-\"]\n--file; -f[file with groupes ids]\n"};
+    std::string access_token, group_id, help{"--access_token; -a;[set your access token]\n--group_id; -g;[set group id without \"-\"]\n--file; -f[file with groupes ids]\n--count_of_posts; -c[set count of post for parsing, default value=10000]\n"};
     std::string file_with_ids, output_db_file{"output.db"};
-    size_t count_of_posts{};
+    size_t count_of_posts{10000};
     if (argc < 4) {
         std::cout << help;
         return 0;
@@ -42,7 +40,6 @@ int main(int argc, char* argv[]){
                 std::cout << help;
                 return 0;
             }
-            std::cout << argv[i+1] << "\n";
             count_of_posts = std::stoi(std::string(argv[i+1]));
         }
         else if (strcmp(argv[i], "--file") == 0 || strcmp(argv[i], "-f")==0) {
@@ -70,16 +67,18 @@ int main(int argc, char* argv[]){
         }
         file.close();
     }
-
-    if (count_of_posts  == 0){
-        std::cout << "set count of posts\n";
-        std::cout << "\n" << help;
-        return 0;
-    } 
+ 
     if ( access_token.length() == 0 ){
-        std::cout << "set your access_token\n";
-        std::cout << "\n" << help;
+        std::cout << "set your access_token" << std::endl;
+        std::cout << std::endl << help;
         return 0;
+    }
+
+    if (ids.size() == 0 && group_id.length() == 0){
+        std::cout << "set group_id or file with groups ids" << std::endl;
+        std::cout << std::endl << help;
+        return 0;
+
     }
 
 
